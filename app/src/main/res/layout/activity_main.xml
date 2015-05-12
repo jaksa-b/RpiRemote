@@ -5,19 +5,72 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
+
 <CheckBox
     android:id="@+id/chkIsInput"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_centerHorizontal="true"
     android:text="@string/chk_lbl_input" />
 
 <ToggleButton
     android:id="@+id/btnPort"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="100dp"
+    android:layout_height="50dp"
     android:layout_below="@+id/chkIsInput"
-    android:layout_centerHorizontal="true" />
+    android:layout_alignRight="@+id/chkIsInput"
+    android:layout_alignEnd="@+id/chkIsInput" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnPort"
+
+        android:id="@+id/linearLayout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/light1"
+            android:id="@+id/textViewLight1"
+            android:layout_weight="0.50"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/light2"
+            android:id="@+id/textViewLight2"
+            android:layout_weight="0.50"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearLayout">
+
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:id="@+id/light1"
+            android:layout_weight="0.50" />
+
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:id="@+id/light2"
+            android:layout_weight="0.50" />
+    </LinearLayout>
+
+
+
 
 </RelativeLayout>

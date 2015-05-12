@@ -1,7 +1,11 @@
 package com.jaksabasic.rpiremote;
 
-import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,21 +16,33 @@ import co.teubi.raspberrypi.io.GPIO;
 import co.teubi.raspberrypi.io.GPIOStatus;
 import co.teubi.raspberrypi.io.PORTFUNCTION;
 
-public class MainActivity extends Activity implements GPIO.PortUpdateListener,GPIO.ConnectionEventListener {
+public class MainActivity extends ActionBarActivity implements GPIO.PortUpdateListener,GPIO.ConnectionEventListener {
 
     public GPIO gpioPort;
+    String shareHost,sharePort,shareUser,sharePass;
+    SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPref = getSharedPreferences(getResources().getString(R.string.sharedPreferencesWebiopi), Context.MODE_PRIVATE);
+        shareHost = sharedPref.getString(getResources().getString(R.string.sharedPreferencesHost), "");
+        sharePort = sharedPref.getString(getResources().getString(R.string.sharedPreferencesPort), "");
+        shareUser = sharedPref.getString(getResources().getString(R.string.sharedPreferencesUser), "");
+        sharePass = sharedPref.getString(getResources().getString(R.string.sharedPreferencesPass), "");
+        Log.d("Share Host", shareHost);
+        Log.d("Share Port",sharePort);
+        Log.d("Share User",shareUser);
+        Log.d("Share Pass",sharePass);
+
         gpioPort = new GPIO(
                 new GPIO.ConnectionInfo(
-                        "192.168.1.100",
+                        shareHost,
                         8000,
-                        "webiopi",
-                        "raspberry"
+                        shareUser,
+                        sharePass
                 )
         );
 
@@ -37,9 +53,9 @@ public class MainActivity extends Activity implements GPIO.PortUpdateListener,GP
             @Override
             public void onClick(View v) {
                 if(cb.isChecked()) {
-                    gpioPort.setFunction(18, PORTFUNCTION.OUTPUT);
+                    gpioPort.setFunction(4, PORTFUNCTION.OUTPUT);
                 } else {
-                    gpioPort.setFunction(18, PORTFUNCTION.INPUT);
+                    gpioPort.setFunction(4, PORTFUNCTION.INPUT);
                 }
 
             }
@@ -53,14 +69,47 @@ public class MainActivity extends Activity implements GPIO.PortUpdateListener,GP
                 // Only change port value if the port is an "output"
                 if(!cb.isChecked()) {
                     if(!tb.isChecked()) {
+                        gpioPort.setValue(4, 0);
+                    } else {
+                        gpioPort.setValue(4, 1);
+                    }
+                }
+            }
+        });
+        final ToggleButton light1 = (ToggleButton)findViewById(R.id.light1);
+
+        light1.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Only change port value if the port is an "output"
+                if(!cb.isChecked()) {
+                    if(!light1.isChecked()) {
+                        gpioPort.setValue(17, 0);
+                    } else {
+                        gpioPort.setValue(17, 1);
+                    }
+                }
+            }
+        });
+        final ToggleButton light2 = (ToggleButton)findViewById(R.id.light2);
+
+        light2.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Only change port value if the port is an "output"
+                if(!cb.isChecked()) {
+                    if(!light2.isChecked()) {
                         gpioPort.setValue(18, 0);
                     } else {
                         gpioPort.setValue(18, 1);
                     }
                 }
-
             }
         });
+
+
         // To start monitoring the status of the port
         this.gpioPort.addPortUpdateListener(this);
         (new Thread(this.gpioPort)).start();
@@ -71,7 +120,7 @@ public class MainActivity extends Activity implements GPIO.PortUpdateListener,GP
             public void run() {
                 // First check if the port is configured
                 // as an input or output
-                if(stat.ports.get(18).function== PORTFUNCTION.INPUT) {
+                if(stat.ports.get(4).function== PORTFUNCTION.INPUT) {
 
                     // Check the checkbox
                     ((CheckBox) findViewById(R.id.chkIsInput)).setChecked(true);
@@ -81,8 +130,8 @@ public class MainActivity extends Activity implements GPIO.PortUpdateListener,GP
                     ((ToggleButton) findViewById(R.id.btnPort)).setEnabled(false);
 
                     // Set the checked state based on the current port value
-                    ((ToggleButton) findViewById(R.id.btnPort)).setChecked(stat.ports.get(18).value.toBool());
-                } else if (stat.ports.get(18).function==PORTFUNCTION.OUTPUT) {
+                    ((ToggleButton) findViewById(R.id.btnPort)).setChecked(stat.ports.get(4).value.toBool());
+                } else if (stat.ports.get(4).function==PORTFUNCTION.OUTPUT) {
 
                     // Un-check the checkbox
                     ((CheckBox) findViewById(R.id.chkIsInput)).setChecked(false);
@@ -92,7 +141,7 @@ public class MainActivity extends Activity implements GPIO.PortUpdateListener,GP
                     ((ToggleButton) findViewById(R.id.btnPort)).setEnabled(true);
 
                     // Set the checked state based on the current port value
-                    ((ToggleButton) findViewById(R.id.btnPort)).setChecked(stat.ports.get(18).value.toBool());
+                    ((ToggleButton) findViewById(R.id.btnPort)).setChecked(stat.ports.get(4).value.toBool());
 
                 } else {
 
@@ -120,6 +169,8 @@ public class MainActivity extends Activity implements GPIO.PortUpdateListener,GP
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent i = new Intent(this, SettingsActivity.class);
+            startActivity(i);
             return true;
         }
 
