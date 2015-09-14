@@ -1,4 +1,4 @@
-package com.androidhive.jsonparsing;
+package com.jaksabasic.androidhive.jsonparsing;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

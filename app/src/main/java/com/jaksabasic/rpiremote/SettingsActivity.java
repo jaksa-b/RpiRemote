@@ -24,15 +24,22 @@ public class SettingsActivity extends ActionBarActivity{
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setup_layout);
+        sharedPref = getSharedPreferences(getResources().getString(R.string.sharedPreferencesWebiopi), Context.MODE_PRIVATE);
 
         webiopi_host = (EditText) findViewById(R.id.webiopi_host);
         webiopi_port = (EditText) findViewById(R.id.webiopi_port);
         webiopi_user = (EditText) findViewById(R.id.webiopi_user);
         webiopi_pass = (EditText) findViewById(R.id.webiopi_pass);
+
+        webiopi_host.setText(sharedPref.getString(getResources().getString(R.string.sharedPreferencesHost), ""));
+        webiopi_port.setText(sharedPref.getString(getResources().getString(R.string.sharedPreferencesPort), ""));
+        webiopi_user.setText(sharedPref.getString(getResources().getString(R.string.sharedPreferencesUser), ""));
+        webiopi_pass.setText(sharedPref.getString(getResources().getString(R.string.sharedPreferencesPass), ""));
 
         savaSettings = (Button) findViewById(R.id.settings_save_button);
 
@@ -46,16 +53,17 @@ public class SettingsActivity extends ActionBarActivity{
                 pass = webiopi_pass.getText().toString();
 
 
-                sharedPref = getSharedPreferences(getResources().getString(R.string.sharedPreferencesWebiopi), Context.MODE_PRIVATE);
                 editor = sharedPref.edit();
                 editor.putString(getResources().getString(R.string.sharedPreferencesHost), host);
                 editor.putString(getResources().getString(R.string.sharedPreferencesPort), port);
                 editor.putString(getResources().getString(R.string.sharedPreferencesUser), user);
                 editor.putString(getResources().getString(R.string.sharedPreferencesPass), pass);
                 editor.apply();
+                editor.commit();
 
                 Log.d("SP Host", sharedPref.getString(getResources().getString(R.string.sharedPreferencesWebiopi), "host"));
-                startActivity(new Intent(getBaseContext(), MainActivity.class));
+                //startActivity(new Intent(getBaseContext(), MainActivity.class));
+                finish();
             }
         });
 

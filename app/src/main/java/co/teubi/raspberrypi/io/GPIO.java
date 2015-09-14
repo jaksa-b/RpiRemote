@@ -6,7 +6,7 @@ import java.util.Locale;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.androidhive.jsonparsing.JSONParser;
+import com.jaksabasic.androidhive.jsonparsing.JSONParser;
 
 /**
  * 
@@ -514,13 +514,13 @@ public class GPIO implements Runnable {
 						+ ":" + conn.port + "/*", conn.port);
 
 				if (obj != null) {
-					status.UARTEnabled = (obj.getInt("UART0") == 0) ? false
+					status.UARTEnabled = (!obj.has("UART0") || obj.getInt("UART0") == 0) ? false
 							: true;
-					status.SPIEnabled = (obj.getInt("SPI0") == 0) ? false
+					status.SPIEnabled = (!obj.has("SPI0") || obj.getInt("SPI0") == 0) ? false
 							: true;
-					status.I2CEnabled = ((obj.getInt("I2C0") == 0) ? false
+					status.I2CEnabled = ((!obj.has("I2C0") || obj.getInt("I2C0") == 0) ? false
 							: true)
-							| ((obj.getInt("I2C1") == 0) ? false : true);
+							| ((!obj.has("I2C1") || obj.getInt("I2C1") == 0) ? false : true);
 
 				}
 				
